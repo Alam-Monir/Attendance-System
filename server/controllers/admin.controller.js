@@ -59,7 +59,53 @@ exports.getAttendanceLogs = async (req, res) => {
     }
 };
 
-// GET /api/admin/attemdance/today
+// GET /api/admin/attendance/:id
+exports.getAttendanceByEmployee = async (req, res) => {
+    const { id } = req.params;
+    const { from, to } = req.query;
+
+    const where = {
+        userId: id,
+    };
+
+    if (from && to) {
+        where.date = {
+            [Op.between]: [from, to],
+        };
+    } else if (from) {
+        where.date = {
+            [Op.gte]: from,
+        };
+    } else if (to) {
+        where.date = {
+            [Op.lte]: to,
+        };
+    }
+
+    try {
+        const records = await attendance.findAll({
+            where,
+            include: {
+                model: user,
+                attributes: ["id", "name", "email"],
+            },
+            order: [["date", "DESC"]],
+        });
+
+        // Extract only present dates
+        const presentDates = records
+            .filter((r) => r.checkInTime)
+            .map((r) => r.date);
+
+        res.status(200).json({ presentDates, records });
+    } catch (error) {
+        console.error("Error fetching attendance for employee:", error);
+        res.status(500).json({ message: "Server error while fetching attendance." });
+    }
+};
+
+
+// GET /api/admin/attendance/today
 exports.getTodayAttendance = async (req, res) => {
   const today = moment().format("YYYY-MM-DD");
 
@@ -102,6 +148,33 @@ exports.getAllLeaveRequests = async (req, res) => {
         res.status(500).json({ message: "Server error while fetching leave requests." });
     }
 };
+
+// GET /api/admin/leaves/:id
+exports.getLeaveRequestsByEmployee = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const leaves = await Leave.findAll({
+            where: {
+                userId: id,
+            },
+            include: [
+                {
+                    model: user,
+                    attributes: ["id", "name", "email"],
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+        });
+
+        res.status(200).json({ leaveRequests: leaves });
+    } catch (error) {
+        console.error("Error fetching leaves for employee:", error);
+        res.status(500).json({ message: "Server error while fetching leave requests." });
+    }
+};
+;
+
 
 // PUT /api/admin/leaves/:id/approve
 exports.approveLeaveRequest = async (req, res) => {

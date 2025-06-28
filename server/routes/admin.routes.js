@@ -11,9 +11,11 @@ router.use(authenticate, authorizeRole("admin"));
 router.get("/employees", adminController.getAllEmployees);
 router.get("/attendance", adminController.getAttendanceLogs);
 router.get("/attendance/today", adminController.getTodayAttendance);
+router.get("/attendance/:id", adminController.getAttendanceByEmployee);
 
 // Leave request management
 router.get("/leaves", adminController.getAllLeaveRequests);
+router.get("/leaves/:id", adminController.getLeaveRequestsByEmployee);
 router.put("/leaves/:id/approve", adminController.approveLeaveRequest);
 router.put("/leaves/:id/reject", adminController.rejectLeaveRequest);
 
