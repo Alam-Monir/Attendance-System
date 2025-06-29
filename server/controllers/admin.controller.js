@@ -107,25 +107,25 @@ exports.getAttendanceByEmployee = async (req, res) => {
 
 // GET /api/admin/attendance/today
 exports.getTodayAttendance = async (req, res) => {
-  const today = moment().format("YYYY-MM-DD");
+    const today = moment().format("YYYY-MM-DD");
 
-  try {
-    const attendances = await attendance.findAll({
-      where: {
-        date: today,
-      },
-      include: {
-        model: user,
-        attributes: ["id", "name", "email"],
-      },
-      order: [["checkInTime", "ASC"]],
-    });
+    try {
+        const attendances = await attendance.findAll({
+            where: {
+                date: today,
+            },
+            include: {
+                model: user,
+                attributes: ["id", "name", "email"],
+            },
+            order: [["checkInTime", "ASC"]],
+        });
 
-    res.status(200).json({ attendances });
-  } catch (error) {
-    console.error("Error fetching today’s attendance:", error);
-    res.status(500).json({ message: "Server error while fetching today’s attendance." });
-  }
+        res.status(200).json({ attendances });
+    } catch (error) {
+        console.error("Error fetching today’s attendance:", error);
+        res.status(500).json({ message: "Server error while fetching today’s attendance." });
+    }
 };
 
 
@@ -277,5 +277,36 @@ exports.getAdminSummary = async (req, res) => {
     } catch (error) {
         console.error("Error fetching admin summary:", error);
         res.status(500).json({ message: "Server error while fetching summary." });
+    }
+};
+
+// GET /api/admin/search
+exports.searchEmployees = async (req, res) => {
+    const { query } = req.query;
+
+    if (!query || query.trim() === "") {
+        return res.status(400).json({ error: "Query is required." });
+    }
+
+    try {
+        const employees = await user.findAll({
+            where: {
+                role: "employee",
+                [Op.or]: [
+                    { name: { [Op.like]: `%${query}%` } },
+                    { email: { [Op.like]: `%${query}%` } },
+                ],
+            },
+            attributes: ["id", "name", "email", "role"],
+        });
+
+        if (employees.length === 0) {
+            return res.status(404).json({ message: "No employees found." });
+        }
+
+        res.json(employees);
+    } catch (err) {
+        console.error("Search error:", err);
+        res.status(500).json({ error: "Server error" });
     }
 };

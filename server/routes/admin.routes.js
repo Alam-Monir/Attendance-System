@@ -21,6 +21,7 @@ router.put("/leaves/:id/reject", adminController.rejectLeaveRequest);
 
 // Add Employee routes
 router.post("/employees", adminController.addEmployee);
+router.get("/search", adminController.searchEmployees);
 
 // Admin Summary
 router.get("/summary", adminController.getAdminSummary);
