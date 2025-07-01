@@ -25,6 +25,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM("admin", "employee"),
             defaultValue: "employee",
         },
+        otp: {
+            type: DataTypes.STRING(6),
+            allowNull: true,
+        },
+        otpExpiresAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
     }, {
         tableName: "Users",
     });

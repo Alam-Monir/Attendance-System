@@ -5,7 +5,7 @@ import { useState } from "react";
 import API from "../../lib/axios";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 
 export function Login() {
   const [email, setEmail] = useState<string>("");
@@ -77,12 +76,12 @@ export function Login() {
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
+                  <Link
+                    to="/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input
                   id="password"

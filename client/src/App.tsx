@@ -4,6 +4,7 @@ import EmployeeDashboard from "@/pages/employee/Dashboard";
 import { Login } from "@/pages/auth/Login";
 import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/auth/login" element={<Login />} />
           {/* <Route path="/auth/register" element={<Register />} /> */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Protected admin routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>

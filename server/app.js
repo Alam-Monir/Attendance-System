@@ -34,7 +34,7 @@ app.use("/api/leave", leaveRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Sequelize Sync
-db.sequelize.sync()
+db.sequelize.sync({ alter: true })
   .then(() => {
     console.log("✅ Database synced successfully.");
   })

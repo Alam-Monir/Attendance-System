@@ -17,6 +17,11 @@ router.post("/logout", (req, res) => {
   return res.status(200).json({ message: "Logged out successfully" });
 });
 
+// Forgot Password Routes
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/verify-otp", authController.verifyOtp);
+router.post("/reset-password", authController.resetPassword);
+
 // Password Change Route with validation
 router.post("/change-password", authenticate, validatePasswordChange, passwordController.changePassword);
 
